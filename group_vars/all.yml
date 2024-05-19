@@ -1,0 +1,4 @@
+---
+# Common variables
+timezone: "UTC"
+html_file: "/path/to/your/html/file"
