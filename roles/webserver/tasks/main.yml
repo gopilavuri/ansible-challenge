@@ -1,0 +1,37 @@
+---
+- name: Install httpd
+  yum:
+    name: httpd
+    state: present
+
+- name: Start and enable httpd service
+  service:
+    name: httpd
+    state: started
+    enabled: true
+
+- name: Copy HTML files
+  copy:
+    src: "{{ item.src }}"
+    dest: /var/www/html/index.html
+  with_items:
+    - { src: "{{ html_file }}" }
+
+- name: Configure firewall to allow http and https
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+  with_items:
+    - http
+    - https
+
+- name: Generate self-signed SSL certificate
+  command: openssl req -new -x509 -days 365 -nodes -out /etc/pki/tls/certs/localhost.crt -keyout /etc/pki/tls/private/localhost.key -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=localhost"
+
+- name: Configure SSL for httpd
+  template:
+    src: ssl.conf.j2
+    dest: /etc/httpd/conf.d/ssl.conf
+  notify:
+    - restart httpd

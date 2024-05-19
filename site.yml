@@ -1,0 +1,6 @@
+---
+- hosts: tag_web
+  become: yes
+  roles:
+    - common
+    - webserver

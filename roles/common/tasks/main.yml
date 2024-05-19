@@ -1,0 +1,16 @@
+---
+- name: Update and upgrade packages
+  yum:
+    name: "*"
+    state: latest
+
+- name: Install common packages
+  yum:
+    name:
+      - chrony
+      - vim
+    state: present
+
+- name: Set timezone to UTC
+  timezone:
+    name: "UTC"
